@@ -1,2 +1,3 @@
-# hosts-blackhole
+# Hosts Blackhole
+
 BEST hosts list processing helper for ad-blocking/blocker programs: AdGuard, AdAway, blocky, grimd...

@@ -4,9 +4,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"embed"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -49,6 +51,9 @@ const (
 
 //go:embed home.html
 var EmbedHomepage embed.FS
+
+//go:embed list.html
+var EmbedListpage embed.FS
 
 //go:embed favicon.ico
 var EmbedFavicon embed.FS
@@ -145,17 +150,27 @@ func main() {
 	router.StaticFS(ROUTE_DATA, http.Dir(DEFAULT_CACHE_DIR))
 
 	router.GET(ROUTE_LIST, func(c *gin.Context) {
-		// TODO design a webpage
+
+		listTemplate, _ := EmbedListpage.ReadFile("list.html")
+
 		files, err := ioutil.ReadDir(DEFAULT_CACHE_DIR)
 		if err != nil {
 			log.Fatal(err)
 		}
-
+		var filesPath []string
 		for _, file := range files {
-			fmt.Println(file.Name())
+			fileName := file.Name()
+			if strings.HasSuffix(fileName, ".txt") {
+				filesPath = append(filesPath, filepath.Join(RuleDir, fileName))
+			}
 		}
 
-		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("design a webpage"))
+		json, err := json.Marshal(filesPath)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		c.Data(http.StatusOK, "text/html; charset=utf-8", bytes.Replace(listTemplate, []byte("%DATA%"), json, 1))
 		c.Abort()
 	})
 
