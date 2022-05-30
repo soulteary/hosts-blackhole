@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/soulteary/hosts-blackhole/internal/logger"
 )
 
@@ -75,21 +76,16 @@ func unique(src []string) []string {
 	return list
 }
 
-func Test() []string {
+func Purge(files []string) (mixed []string) {
 	log := logger.GetLogger()
 	log.Info()
 
-	// TODO scan files
-	rules := []string{
-		"rules/hosts.txt",
-		"rules/notrack-blocklist.txt",
-		"rules/notrack-malware.txt",
-		"rules/adaway.txt",
-		"rules/filter.txt",
+	if len(files) == 0 {
+		return mixed
 	}
 
 	var results []Lines
-	for _, file := range rules {
+	for _, file := range files {
 		types := detectType(file)
 		result := Lines{}
 		switch types {
@@ -119,7 +115,6 @@ func Test() []string {
 
 	log.Info("Load Providers")
 
-	var mixed []string
 	for _, result := range results {
 		lenKey := len(result.name)
 		lenVal := len(strconv.Itoa(result.count))
