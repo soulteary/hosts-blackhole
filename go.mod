@@ -3,6 +3,7 @@ module github.com/soulteary/hosts-blackhole
 go 1.18
 
 require (
+	github.com/gin-contrib/gzip v0.0.5
 	github.com/gin-gonic/gin v1.8.0
 	github.com/sirupsen/logrus v1.8.1
 )

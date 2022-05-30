@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="soulteary">
+    <link rel="shortcut icon" href=favicon.ico>
+    <!-- design inspire by https://codepen.io/AllThingsSmitty/pen/pNLVWm -->
+    <!-- icon design by https://www.iconfont.cn/collections/detail?cid=40773 -->
+    <title>Simple AD Filter Provider</title>
+    <style>
+        :root {
+            --color-primary: #58a809;
+            --color-background: #eee;
+            --color-foreground: #fff;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            align-items: center;
+            background-color: var(--color-background);
+            display: flex;
+            font: 16px/1.05 "Montserrat", sans-serif;
+        }
+
+        .container {
+            margin: 0 auto;
+        }
+
+        .card,
+        .envelope {
+            background: var(--color-foreground);
+            box-shadow: -1px 8px 3px 0 rgba(0, 0, 0, 0.6);
+            height: 21em;
+            padding: 2em;
+            position: relative;
+            width: 15em;
+        }
+
+        .envelope {
+            background: var(--color-primary);
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.8);
+            margin: -2em -2em;
+            position: absolute;
+            transform: rotate(-8deg);
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 0;
+            text-transform: uppercase;
+            width: 90%;
+        }
+
+        em {
+            color: var(--color-primary);
+            font-style: normal;
+        }
+
+        .btn {
+            position: absolute;
+            left: 30px;
+            bottom: 60px;
+            text-transform: uppercase;
+            color: #fff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            outline: none;
+            background: var(--color-primary);
+            width: 130px;
+            height: 40px;
+            line-height: 42px;
+            padding: 0;
+            border: none;
+            text-align: center;
+        }
+
+        .btn span {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .btn:before,
+        .btn:after,
+        .btn span:before,
+        .btn span:after {
+            position: absolute;
+            content: "";
+            background: var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .btn:before,
+        .btn:after {
+            right: 0;
+            top: 0;
+        }
+
+        .btn span:before,
+        .btn span:after {
+            left: 0;
+            bottom: 0;
+        }
+
+        .btn span:before,
+        .btn:before {
+            height: 0%;
+            width: 2px;
+        }
+
+        .btn span:after,
+        .btn:after {
+            width: 0%;
+            height: 2px;
+        }
+
+        .btn:hover {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .btn:hover:after,
+        .btn span:hover:after {
+            width: 100%;
+        }
+
+        .btn:hover:before,
+        .btn span:hover:before {
+            height: 100%;
+        }
+
+        .btn span:hover {
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="envelope"></div>
+            <h1>Simple <em>Ad Filter</em> Provider <em>for</em> everyone.</h1>
+            <a class="btn" href="/list/"><span>Go!</span></a>
+        </div>
+    </div>
+</body>
+
+</html>
