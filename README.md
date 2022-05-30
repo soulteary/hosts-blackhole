@@ -22,6 +22,25 @@ Currently supported data sources:
 - Project: https://github.com/AdguardTeam/AdGuardSDNSFilter/
   - file: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
 
+## CLI && ENV
+
+CLI parameters:
+
+```bash
+  --debug      enable debug mode
+  --port int   web port (default 8345)
+```
+
+usage: `./hbh --port=8345 --debug=false`
+
+Env variables:
+
+```bash
+HBH_DEBUG=true
+HBH_PORT=1024
+```
+
+usage: `HBH_DEBUG=true HBH_PORT=1024 ./hbh`
 
 ## APIs && Pages
 
