@@ -22,9 +22,9 @@ import (
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-
 	"github.com/soulteary/hosts-blackhole/internal/logger"
 	provider "github.com/soulteary/hosts-blackhole/provider"
+	flag "github.com/spf13/pflag"
 )
 
 const (
@@ -58,8 +58,7 @@ var EmbedListpage embed.FS
 //go:embed favicon.ico
 var EmbedFavicon embed.FS
 
-// TODO with argv
-var appPort = 8080
+var appPort = 8345
 var appDebug = false
 
 var RuleDir = ""
@@ -79,6 +78,11 @@ func init() {
 	if err != nil {
 		log.Fatal("程序无法创建缓存目录: ", err)
 	}
+
+	flag.IntVar(&appPort, "port", appPort, "web port")
+	flag.BoolVar(&appDebug, "debug", appDebug, "enable debug mode")
+	flag.Parse()
+
 }
 
 func main() {
@@ -178,6 +182,7 @@ func main() {
 		Addr:    ":" + port,
 		Handler: router,
 	}
+	log.Info("服务监听端口：", appPort)
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
