@@ -20,6 +20,7 @@ import (
 	"syscall"
 	"time"
 
+	env "github.com/caarlos0/env/v6"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/soulteary/hosts-blackhole/internal/logger"
@@ -61,6 +62,11 @@ var EmbedFavicon embed.FS
 var appPort = 8345
 var appDebug = false
 
+type EnvConfig struct {
+	Port  int  `env:"HBH_PORT" envDefault:"8345"`
+	Debug bool `env:"HBH_DEBUG" envDefault:"false"`
+}
+
 var RuleDir = ""
 var CacheDir = ""
 
@@ -79,10 +85,38 @@ func init() {
 		log.Fatal("程序无法创建缓存目录: ", err)
 	}
 
+	userEnv := EnvConfig{}
+	_ = env.Parse(&userEnv)
+
 	flag.IntVar(&appPort, "port", appPort, "web port")
 	flag.BoolVar(&appDebug, "debug", appDebug, "enable debug mode")
 	flag.Parse()
 
+	userArgs := os.Args[1:]
+
+	if len(userArgs) == 0 {
+		if userEnv.Port != 8345 {
+			fmt.Println("update env port")
+			appPort = userEnv.Port
+		}
+		if userEnv.Debug != false {
+			appDebug = userEnv.Debug
+		}
+	} else {
+		for _, args := range userArgs {
+			if !(strings.Contains(args, "--port")) {
+				if userEnv.Port != 8345 {
+					fmt.Println("update env port")
+					appPort = userEnv.Port
+				}
+			}
+			if !(strings.Contains(args, "--debug")) {
+				if userEnv.Debug != false {
+					appDebug = userEnv.Debug
+				}
+			}
+		}
+	}
 }
 
 func main() {
