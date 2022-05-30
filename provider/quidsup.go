@@ -65,9 +65,15 @@ func caseQuidsup(filePath string) (result Lines) {
 		log.Fatal(err)
 	}
 
+	created, err := getCreateTime(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	result.name = name
-	result.date = date
 	result.data = lines
 	result.count = len(lines)
+	result.date = created
+	result.version = date
 	return result
 }

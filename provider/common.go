@@ -8,16 +8,18 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/soulteary/hosts-blackhole/internal/logger"
 )
 
 type Lines struct {
-	name  string
-	data  []string
-	count int
-	date  string
+	name    string
+	data    []string
+	count   int
+	date    string
+	version string
 }
 
 const (
@@ -26,6 +28,15 @@ const (
 	Adaway             = "adaway"
 	Adguard            = "adguard"
 )
+
+func getCreateTime(filePath string) (string, error) {
+	var st syscall.Stat_t
+	if err := syscall.Stat(filePath, &st); err != nil {
+		return "", err
+	}
+
+	return time.Unix(st.Ctimespec.Sec, 0).Format("02/01/2006, 15:04:05"), nil
+}
 
 func detectType(filePath string) string {
 	file, err := os.Open(filePath)
@@ -92,22 +103,22 @@ func Purge(files []string) (mixed []string) {
 		case StevenBlack:
 			result = caseStevenBlack(file)
 			results = append(results, result)
-			log.Infof("Process: %s, %s updated: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.date)
+			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
 		case Quidsup:
 			result = caseQuidsup(file)
 			results = append(results, result)
-			log.Infof("Process: %s, %s updated: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.date)
+			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
 		case Adaway:
 			result = caseAdaway(file)
 			results = append(results, result)
-			log.Infof("Process: %s, %s updated: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.date)
+			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
 		case Adguard:
 			result = caseAdguard(file)
 			results = append(results, result)
-			log.Infof("Process: %s, %s updated: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.date)
+			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
 		}
 	}

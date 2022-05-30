@@ -6,8 +6,6 @@ import (
 	"net"
 	"os"
 	"strings"
-	"syscall"
-	"time"
 )
 
 func caseAdaway(filePath string) (result Lines) {
@@ -47,14 +45,15 @@ func caseAdaway(filePath string) (result Lines) {
 		log.Fatal(err)
 	}
 
-	var st syscall.Stat_t
-	if err := syscall.Stat(filePath, &st); err != nil {
+	created, err := getCreateTime(filePath)
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	result.name = name
-	result.date = time.Unix(st.Ctimespec.Sec, 0).Format("02/01/2006, 15:04:05")
 	result.data = lines
 	result.count = len(lines)
+	result.date = created
+	result.version = result.date
 	return result
 }
