@@ -119,8 +119,6 @@ func main() {
 	})
 
 	router.GET(ROUTE_PURGE, func(c *gin.Context) {
-		// TODO Avoid repeated invalid calculations, avoid ddos
-
 		files, err := ioutil.ReadDir(DEFAULT_DATA)
 		if err != nil {
 			log.Fatal(err)
@@ -134,13 +132,14 @@ func main() {
 		}
 
 		cacheFile := filepath.Join(CacheDir, DEFAULT_CACHE_FILE)
-		content := provider.Purge(filesPath)
-		err = os.WriteFile(cacheFile, []byte(strings.Join(content, "\n")), 0644)
-		if err != nil {
-			log.Fatal("程序无法创建缓存数据: ", err)
+		content, success := provider.Purge(filesPath)
+		if success {
+			err = os.WriteFile(cacheFile, []byte(strings.Join(content, "\n")), 0644)
+			if err != nil {
+				log.Fatal("程序无法创建缓存数据: ", err)
+			}
+			provider.ManualGC()
 		}
-
-		provider.ManualGC()
 
 		c.Redirect(302, ROUTE_LIST)
 	})

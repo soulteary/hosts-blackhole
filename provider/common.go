@@ -2,10 +2,13 @@ package provider
 
 import (
 	"bufio"
+	"crypto/md5"
+	"fmt"
 	"log"
 	"os"
 	"runtime"
 	"runtime/debug"
+	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -29,6 +32,9 @@ const (
 	Adguard            = "adguard"
 )
 
+var cacheKey = ""
+var cacheHash = ""
+
 func getCreateTime(filePath string) (string, error) {
 	var st syscall.Stat_t
 	if err := syscall.Stat(filePath, &st); err != nil {
@@ -36,6 +42,34 @@ func getCreateTime(filePath string) (string, error) {
 	}
 
 	return time.Unix(st.Ctimespec.Sec, 0).Format("02/01/2006, 15:04:05"), nil
+}
+
+func calcMd5(str string) string {
+	data := []byte(str)
+	has := md5.Sum(data)
+	return fmt.Sprintf("%x", has)
+}
+
+func CacheHash(files []string, update bool) (string, string) {
+	sort.Strings(files)
+	key := ""
+	val := ""
+	for _, file := range files {
+		if _, err := os.Stat(file); !os.IsNotExist(err) {
+			key += file
+			created, _ := getCreateTime(file)
+			val += created
+		}
+	}
+
+	key = calcMd5(key)
+	val = calcMd5(val)
+
+	if update {
+		cacheKey = key
+		cacheHash = val
+	}
+	return key, val
 }
 
 func detectType(filePath string) string {
@@ -87,12 +121,17 @@ func unique(src []string) []string {
 	return list
 }
 
-func Purge(files []string) (mixed []string) {
+func Purge(files []string) (mixed []string, success bool) {
 	log := logger.GetLogger()
 	log.Info()
 
 	if len(files) == 0 {
-		return mixed
+		return mixed, false
+	}
+
+	key, val := CacheHash(files, false)
+	if key == cacheKey && val == cacheHash {
+		return mixed, false
 	}
 
 	var results []Lines
@@ -122,6 +161,7 @@ func Purge(files []string) (mixed []string) {
 			break
 		}
 	}
+	CacheHash(files, true)
 	log.Info()
 
 	log.Info("Load Providers")
@@ -144,7 +184,7 @@ func Purge(files []string) (mixed []string) {
 	log.Printf("data processing took %s", elapsed)
 	log.Info()
 
-	return mixed
+	return mixed, true
 }
 
 func ManualGC() {
