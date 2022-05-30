@@ -1,5 +1,9 @@
 # Hosts Blackhole
 
+![](https://img.shields.io/badge/AdAway-hosts-brightgreen) ![](https://img.shields.io/badge/AdGuard-domains-brightgreen) ![](https://img.shields.io/badge/StevenBlack-hosts-brightgreen) ![](https://img.shields.io/badge/NoTrack-blocklists-brightgreen)
+
+[![License: Apache v2](https://img.shields.io/badge/LICENSE-Apache%20v2-blue)](/LICENSE.md)
+
 ![](./logo.png)
 
 BEST hosts list processing helper for ad-blocking/blocker programs: AdGuard, AdAway, blocky, grimd...
