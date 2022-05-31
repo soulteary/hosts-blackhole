@@ -6,7 +6,7 @@ package main
 import (
 	"bytes"
 	"context"
-	"crypto/md5"
+	"crypto/md5" //#nosec
 	"embed"
 	"encoding/json"
 	"fmt"
