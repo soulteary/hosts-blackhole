@@ -244,6 +244,7 @@ func main() {
 // https://github.com/gin-gonic/gin/issues/1222
 func optimizeResourceCacheTime() gin.HandlerFunc {
 	data := []byte(time.Now().String())
+	/* #nosec */
 	etag := fmt.Sprintf("W/%x", md5.Sum(data))
 	return func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.RequestURI, ROUTE_HOMEPAGE) ||

@@ -2,7 +2,7 @@ package provider
 
 import (
 	"bufio"
-	"crypto/md5"
+	"crypto/md5" //#nosec
 	"fmt"
 	"log"
 	"os"
@@ -46,6 +46,7 @@ func getCreateTime(filePath string) (string, error) {
 
 func calcMd5(str string) string {
 	data := []byte(str)
+	/* #nosec */
 	has := md5.Sum(data)
 	return fmt.Sprintf("%x", has)
 }
