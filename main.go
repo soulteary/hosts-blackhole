@@ -24,7 +24,7 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/soulteary/hosts-blackhole/internal/logger"
-	provider "github.com/soulteary/hosts-blackhole/provider"
+	provider "github.com/soulteary/hosts-blackhole/pkg/provider"
 	flag "github.com/spf13/pflag"
 )
 
