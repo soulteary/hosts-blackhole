@@ -32,6 +32,8 @@ const (
 	Adguard            = "adguard"
 )
 
+const baseDir = "./"
+
 var cacheKey = ""
 var cacheHash = ""
 

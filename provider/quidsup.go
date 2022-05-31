@@ -5,12 +5,12 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 func caseQuidsup(filePath string) (result Lines) {
-
-	file, err := os.Open(filePath)
+	file, err := os.Open(filepath.Join(baseDir, filepath.Clean(filePath)))
 	if err != nil {
 		log.Fatal(err)
 	}
