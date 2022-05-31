@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"sort"
@@ -76,7 +77,7 @@ func CacheHash(files []string, update bool) (string, string) {
 }
 
 func detectType(filePath string) string {
-	file, err := os.Open(filePath)
+	file, err := os.Open(filepath.Join(baseDir, filepath.Clean(filePath)))
 	if err != nil {
 		log.Fatal(err)
 	}
