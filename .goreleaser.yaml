@@ -17,9 +17,12 @@ builds:
       - gomips: hardfloat
       - goamd64: v4
 dockers:
-  - image_templates: ["soulteary/hosts-blackhole:latest"]
+  - image_templates:
+    - "soulteary/hosts-blackhole:latest"
+    - "soulteary/hosts-blackhole:{{ .Tag }}"
     dockerfile: docker/Dockerfile.gorelease
     build_flag_templates:
+      - "--pull"
       - --label=org.opencontainers.image.title={{ .ProjectName }}
       - --label=org.opencontainers.image.description={{ .ProjectName }}
       - --label=org.opencontainers.image.url=https://github.com/soulteary/hosts-blackhole
