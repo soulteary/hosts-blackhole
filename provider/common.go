@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/soulteary/hosts-blackhole/internal/logger"
@@ -37,15 +36,6 @@ const baseDir = "./"
 
 var cacheKey = ""
 var cacheHash = ""
-
-func getCreateTime(filePath string) (string, error) {
-	var st syscall.Stat_t
-	if err := syscall.Stat(filePath, &st); err != nil {
-		return "", err
-	}
-
-	return time.Unix(st.Ctimespec.Sec, 0).Format("02/01/2006, 15:04:05"), nil
-}
 
 func calcMd5(str string) string {
 	data := []byte(str)

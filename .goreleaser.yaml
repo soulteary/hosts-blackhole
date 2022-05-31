@@ -3,13 +3,21 @@ builds:
   - env: [CGO_ENABLED=0]
     goos:
       - linux
-      - windows
       - darwin
     goarch:
       - amd64
       - arm64
+    ignore:
+      - goos: darwin
+        goarch: 386
+      - goos: linux
+        goarch: arm
+        goarm: 7
+      - goarm: mips64
+      - gomips: hardfloat
+      - goamd64: v4
 dockers:
-  - image_templates: ["ghcr.io/soulteary/hosts-blackhole:latest"]
+  - image_templates: ["soulteary/hosts-blackhole:latest"]
     dockerfile: docker/Dockerfile.gorelease
     build_flag_templates:
       - --label=org.opencontainers.image.title={{ .ProjectName }}
