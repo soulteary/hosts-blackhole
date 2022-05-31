@@ -86,6 +86,7 @@ Pages:
 - `/` Homepage
 - `/list` View available data sources
 - `/data` Data source index page
+- `/stats` System stats
 
 ## Screenshot
 
@@ -95,5 +96,7 @@ Pages:
 
 ## Todos
 
-- [ ] Docker images (x86, arm)
+- Docker image
+  - [x] x86
+  - [ ] arm
 - [ ] Data source fetch

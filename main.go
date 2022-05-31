@@ -35,6 +35,7 @@ const (
 	DEFAULT_DATA              = "data"
 	DEFAULT_LIST              = "list"
 	DEFAULT_PING              = "ping"
+	DEFAULT_STATS             = "stats"
 	DEFAULT_PURGE             = "purge"
 	DEFAULT_CACHE_RULE        = "public, max-age=31536000"
 	DEFAULT_CACHE_DIR         = "cache"
@@ -48,6 +49,7 @@ const (
 	ROUTE_DATA            = "/" + DEFAULT_DATA
 	ROUTE_LIST            = "/" + DEFAULT_LIST
 	ROUTE_PING            = "/" + DEFAULT_PING
+	ROUTE_STATS           = "/" + DEFAULT_STATS
 	ROUTE_PURGE           = "/" + DEFAULT_PURGE
 )
 
@@ -185,6 +187,12 @@ func main() {
 
 	router.GET(ROUTE_PING, func(c *gin.Context) {
 		c.String(200, "pong")
+		c.Abort()
+		return
+	})
+
+	router.GET(ROUTE_STATS, func(c *gin.Context) {
+		c.String(200, system.Stats(false))
 		c.Abort()
 		return
 	})
