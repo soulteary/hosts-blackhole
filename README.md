@@ -42,6 +42,17 @@ Hosts Count:
  - NoTrack Malware Blocklist =         305  
 ```
 
+## Docker
+
+You can download images from dockerhub, get up and running quickly:
+
+```bash
+docker run --rm -it -p 8345:8345 \
+    -v `pwd`/data:/data \
+    -v `pwd`/cache:/cache \
+    soulteary/hosts-blackhole
+```
+
 ## CLI && ENV
 
 CLI parameters:
