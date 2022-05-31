@@ -168,7 +168,7 @@ func main() {
 		cacheFile := filepath.Join(CacheDir, DEFAULT_CACHE_FILE)
 		content, success := provider.Purge(filesPath)
 		if success {
-			err = os.WriteFile(cacheFile, []byte(strings.Join(content, "\n")), 0644)
+			err = os.WriteFile(cacheFile, []byte(strings.Join(content, "\n")), 0600)
 			if err != nil {
 				log.Fatal("程序无法创建缓存数据: ", err)
 			}
