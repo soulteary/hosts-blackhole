@@ -7,15 +7,6 @@ builds:
     goarch:
       - amd64
       - arm64
-    ignore:
-      - goos: darwin
-        goarch: 386
-      - goos: linux
-        goarch: arm
-        goarm: 7
-      - goarm: mips64
-      - gomips: hardfloat
-      - goamd64: v4
 dockers:
   - image_templates:
     - "soulteary/hosts-blackhole:latest"
