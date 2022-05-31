@@ -14,7 +14,7 @@ import (
 	"github.com/soulteary/hosts-blackhole/pkg/crypto"
 )
 
-type Lines struct {
+type DataSet struct {
 	name    string
 	data    []string
 	count   int
@@ -35,26 +35,27 @@ const baseDir = "./"
 var cacheKey = ""
 var cacheHash = ""
 
-func CacheHash(files []string, update bool) (string, string) {
-	sort.Strings(files)
+func calcCacheHash(files *[]string) (string, string) {
+	sort.Strings(*files)
 	key := ""
 	val := ""
-	for _, file := range files {
+	for _, file := range *files {
 		if _, err := os.Stat(file); !os.IsNotExist(err) {
 			key += file
-			created, _ := getCreateTime(file)
+			created, _ := getFileCreateTime(file)
 			val += created
 		}
 	}
+	return crypto.Md5(key), crypto.Md5(val)
+}
 
-	key = crypto.Md5(key)
-	val = crypto.Md5(val)
+func updateCacheHash(files *[]string) {
+	cacheKey, cacheHash = calcCacheHash(&*files)
+}
 
-	if update {
-		cacheKey = key
-		cacheHash = val
-	}
-	return key, val
+func ResetCacheHash() {
+	cacheKey = ""
+	cacheHash = ""
 }
 
 func detectType(filePath string) int {
@@ -87,7 +88,6 @@ func detectType(filePath string) int {
 		if strings.HasPrefix(scanner.Text(), "! Title: AdGuard DNS filter") {
 			return DATA_TYPE_ADGUARD
 		}
-
 		lineNumber++
 	}
 
@@ -107,79 +107,75 @@ func unique(src []string) []string {
 			list = append(list, entry)
 		}
 	}
+	keys = nil
 	return list
 }
 
-func ResetCacheHash() {
-	cacheKey = ""
-	cacheHash = ""
-}
-
-func Purge(files []string) (mixed []string, success bool) {
+func Purge(files []string) (result []string, success bool) {
 	log := logger.GetLogger()
 	log.Info()
 
 	if len(files) == 0 {
-		return mixed, false
+		return result, false
 	}
 
-	key, val := CacheHash(files, false)
+	key, val := calcCacheHash(&files)
 	if key == cacheKey && val == cacheHash {
-		return mixed, false
+		return result, false
 	}
 
-	var results []Lines
+	var dataSets []DataSet
 	for _, file := range files {
 		types := detectType(file)
-		result := Lines{}
+		data := DataSet{}
 		switch types {
 		case DATA_TYPE_STEVEN_BLACK:
-			result = caseStevenBlack(file)
-			results = append(results, result)
-			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
+			data = processStevenBlack(file)
+			dataSets = append(dataSets, data)
+			log.Infof("Process: %s, %s version: %s", data.name, strings.Repeat(" ", 25-len(data.name)), data.version)
 			break
 		case DATA_TYPE_QUIDSUP:
-			result = caseQuidsup(file)
-			results = append(results, result)
-			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
+			data = processQuidsup(file)
+			dataSets = append(dataSets, data)
+			log.Infof("Process: %s, %s version: %s", data.name, strings.Repeat(" ", 25-len(data.name)), data.version)
 			break
 		case DATA_TYPE_ADAWAY:
-			result = caseAdaway(file)
-			results = append(results, result)
-			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
+			data = processAdaway(file)
+			dataSets = append(dataSets, data)
+			log.Infof("Process: %s, %s version: %s", data.name, strings.Repeat(" ", 25-len(data.name)), data.version)
 			break
 		case DATA_TYPE_ADGUARD:
-			result = caseAdguard(file)
-			results = append(results, result)
-			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
+			data = processAdguard(file)
+			dataSets = append(dataSets, data)
+			log.Infof("Process: %s, %s version: %s", data.name, strings.Repeat(" ", 25-len(data.name)), data.version)
 			break
 		default:
 			log.Infof("Found unknown type data: %s", file)
 			break
 		}
 	}
-	CacheHash(files, true)
+	updateCacheHash(&files)
 	log.Info()
 
 	log.Info("Load Providers")
 
-	for _, result := range results {
-		lenKey := len(result.name)
-		lenVal := len(strconv.Itoa(result.count))
-		log.Infof(" - %v%s = %s %d", result.name, strings.Repeat(" ", 25-lenKey), strings.Repeat(" ", 10-lenVal), result.count)
-		mixed = append(mixed, result.data...)
+	for _, data := range dataSets {
+		lenKey := len(data.name)
+		lenVal := len(strconv.Itoa(data.count))
+		log.Infof(" - %v%s = %s %d", data.name, strings.Repeat(" ", 25-lenKey), strings.Repeat(" ", 10-lenVal), data.count)
+		result = append(result, data.data...)
 	}
 
 	start := time.Now()
-	total := len(mixed)
-	mixed = unique(mixed)
-	unique := len(mixed)
-	log.Infof("Rules uniq/total =	%d, %d", unique, total)
+	total := len(result)
+	result = unique(result)
+	uniq := len(result)
+	log.Infof("Rules uniq/total =	%d, %d", uniq, total)
 	log.Info()
 
 	elapsed := time.Since(start)
 	log.Printf("data processing took %s", elapsed)
 	log.Info()
 
-	return mixed, true
+	return result, true
 }

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func getCreateTime(filePath string) (string, error) {
+func getFileCreateTime(filePath string) (string, error) {
 	var st syscall.Stat_t
 	if err := syscall.Stat(filePath, &st); err != nil {
 		return "", err

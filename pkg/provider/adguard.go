@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func caseAdguard(filePath string) (result Lines) {
+func processAdguard(filePath string) (result DataSet) {
 	file, err := os.Open(filepath.Join(baseDir, filepath.Clean(filePath)))
 	if err != nil {
 		log.Fatal(err)
@@ -58,7 +58,7 @@ func caseAdguard(filePath string) (result Lines) {
 		log.Fatal(err)
 	}
 
-	created, err := getCreateTime(filePath)
+	created, err := getFileCreateTime(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
