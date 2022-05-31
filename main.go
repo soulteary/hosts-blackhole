@@ -166,6 +166,10 @@ func main() {
 		}
 
 		cacheFile := filepath.Join(CacheDir, DEFAULT_CACHE_FILE)
+		if _, err := os.Stat(cacheFile); os.IsNotExist(err) {
+			provider.ResetCacheHash()
+		}
+
 		content, success := provider.Purge(filesPath)
 		if success {
 			err = os.WriteFile(cacheFile, []byte(strings.Join(content, "\n")), 0600)

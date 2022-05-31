@@ -119,6 +119,11 @@ func unique(src []string) []string {
 	return list
 }
 
+func ResetCacheHash() {
+	cacheKey = ""
+	cacheHash = ""
+}
+
 func Purge(files []string) (mixed []string, success bool) {
 	log := logger.GetLogger()
 	log.Info()
