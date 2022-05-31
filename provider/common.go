@@ -81,7 +81,11 @@ func detectType(filePath string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	lineNumber := 0
 	scanner := bufio.NewScanner(file)

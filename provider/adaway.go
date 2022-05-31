@@ -14,7 +14,11 @@ func caseAdaway(filePath string) (result Lines) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	skipLocalRecords := false
 	scanner := bufio.NewScanner(file)

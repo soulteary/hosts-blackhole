@@ -14,7 +14,11 @@ func caseQuidsup(filePath string) (result Lines) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	getUpdateTime := false
 	date := ""
