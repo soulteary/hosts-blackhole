@@ -1,2 +1,6 @@
 data/*.txt
 cache/*.txt
+
+# binaries
+hosts-blackhole
+hbh

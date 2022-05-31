@@ -1,0 +1,22 @@
+project_name: hbh
+builds:
+  - env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+dockers:
+  - image_templates: ["ghcr.io/soulteary/hosts-blackhole:latest"]
+    dockerfile: docker/Dockerfile.gorelease
+    build_flag_templates:
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/soulteary/hosts-blackhole
+      - --label=org.opencontainers.image.source=https://github.com/soulteary/hosts-blackhole
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=Apache-v2
