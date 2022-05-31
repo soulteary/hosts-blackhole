@@ -26,10 +26,11 @@ type Lines struct {
 }
 
 const (
-	StevenBlack string = "steven-black"
-	Quidsup            = "quidsup"
-	Adaway             = "adaway"
-	Adguard            = "adguard"
+	DATA_TYPE_UNKNOWN      int = 0
+	DATA_TYPE_STEVEN_BLACK     = 1
+	DATA_TYPE_QUIDSUP          = 2
+	DATA_TYPE_ADAWAY           = 3
+	DATA_TYPE_ADGUARD          = 4
 )
 
 const baseDir = "./"
@@ -66,7 +67,7 @@ func CacheHash(files []string, update bool) (string, string) {
 	return key, val
 }
 
-func detectType(filePath string) string {
+func detectType(filePath string) int {
 	file, err := os.Open(filepath.Join(baseDir, filepath.Clean(filePath)))
 	if err != nil {
 		log.Fatal(err)
@@ -82,19 +83,19 @@ func detectType(filePath string) string {
 
 	for scanner.Scan() {
 		if lineNumber > 30 {
-			return ""
+			return DATA_TYPE_UNKNOWN
 		}
 		if strings.HasPrefix(scanner.Text(), "# Title: StevenBlack/hosts") {
-			return StevenBlack
+			return DATA_TYPE_STEVEN_BLACK
 		}
 		if strings.HasPrefix(scanner.Text(), "# Title: NoTrack") {
-			return Quidsup
+			return DATA_TYPE_QUIDSUP
 		}
 		if strings.HasPrefix(scanner.Text(), "# AdAway default blocklist") {
-			return Adaway
+			return DATA_TYPE_ADAWAY
 		}
 		if strings.HasPrefix(scanner.Text(), "! Title: AdGuard DNS filter") {
-			return Adguard
+			return DATA_TYPE_ADGUARD
 		}
 
 		lineNumber++
@@ -104,7 +105,7 @@ func detectType(filePath string) string {
 		log.Fatal(err)
 	}
 
-	return ""
+	return DATA_TYPE_UNKNOWN
 }
 
 func unique(src []string) []string {
@@ -142,25 +143,28 @@ func Purge(files []string) (mixed []string, success bool) {
 		types := detectType(file)
 		result := Lines{}
 		switch types {
-		case StevenBlack:
+		case DATA_TYPE_STEVEN_BLACK:
 			result = caseStevenBlack(file)
 			results = append(results, result)
 			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
-		case Quidsup:
+		case DATA_TYPE_QUIDSUP:
 			result = caseQuidsup(file)
 			results = append(results, result)
 			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
-		case Adaway:
+		case DATA_TYPE_ADAWAY:
 			result = caseAdaway(file)
 			results = append(results, result)
 			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
 			break
-		case Adguard:
+		case DATA_TYPE_ADGUARD:
 			result = caseAdguard(file)
 			results = append(results, result)
 			log.Infof("Process: %s, %s version: %s", result.name, strings.Repeat(" ", 25-len(result.name)), result.version)
+			break
+		default:
+			log.Infof("Found unknown type data: %s", file)
 			break
 		}
 	}
