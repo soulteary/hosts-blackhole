@@ -5,8 +5,7 @@ package main
 
 import (
 	"bytes"
-	"context"
-	"crypto/md5" //#nosec
+	"context" //#nosec
 	"embed"
 	"encoding/json"
 	"fmt"
@@ -24,7 +23,9 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/soulteary/hosts-blackhole/internal/logger"
-	provider "github.com/soulteary/hosts-blackhole/pkg/provider"
+	"github.com/soulteary/hosts-blackhole/pkg/crypto"
+	"github.com/soulteary/hosts-blackhole/pkg/provider"
+	"github.com/soulteary/hosts-blackhole/pkg/system"
 	flag "github.com/spf13/pflag"
 )
 
@@ -176,7 +177,7 @@ func main() {
 			if err != nil {
 				log.Fatal("程序无法创建缓存数据: ", err)
 			}
-			provider.ManualGC()
+			system.ManualGC()
 		}
 
 		c.Redirect(302, ROUTE_LIST)
@@ -248,8 +249,7 @@ func main() {
 // https://github.com/gin-gonic/gin/issues/1222
 func optimizeResourceCacheTime() gin.HandlerFunc {
 	data := []byte(time.Now().String())
-	/* #nosec */
-	etag := fmt.Sprintf("W/%x", md5.Sum(data))
+	etag := crypto.ETag(data)
 	return func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.RequestURI, ROUTE_HOMEPAGE) ||
 			strings.HasPrefix(c.Request.RequestURI, ROUTE_FAVICON) {

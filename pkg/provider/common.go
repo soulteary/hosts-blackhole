@@ -2,19 +2,16 @@ package provider
 
 import (
 	"bufio"
-	"crypto/md5" //#nosec
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
-	"runtime"
-	"runtime/debug"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/soulteary/hosts-blackhole/internal/logger"
+	"github.com/soulteary/hosts-blackhole/pkg/crypto"
 )
 
 type Lines struct {
@@ -38,13 +35,6 @@ const baseDir = "./"
 var cacheKey = ""
 var cacheHash = ""
 
-func calcMd5(str string) string {
-	data := []byte(str)
-	/* #nosec */
-	has := md5.Sum(data)
-	return fmt.Sprintf("%x", has)
-}
-
 func CacheHash(files []string, update bool) (string, string) {
 	sort.Strings(files)
 	key := ""
@@ -57,8 +47,8 @@ func CacheHash(files []string, update bool) (string, string) {
 		}
 	}
 
-	key = calcMd5(key)
-	val = calcMd5(val)
+	key = crypto.Md5(key)
+	val = crypto.Md5(val)
 
 	if update {
 		cacheKey = key
@@ -192,28 +182,4 @@ func Purge(files []string) (mixed []string, success bool) {
 	log.Info()
 
 	return mixed, true
-}
-
-func ManualGC() {
-	log := logger.GetLogger()
-
-	log.Info("Runtime Information:")
-
-	runtime.GC()
-	debug.FreeOSMemory()
-
-	var m runtime.MemStats
-	runtime.ReadMemStats(&m)
-
-	log.Infof(" MEM Alloc =        %10v MB", toMB(m.Alloc))
-	log.Infof(" MEM HeapAlloc =    %10v MB", toMB(m.HeapAlloc))
-	log.Infof(" MEM Sys =          %10v MB", toMB(m.Sys))
-	log.Infof(" MEM NumGC =        %10v", m.NumGC)
-	log.Infof(" RUN NumCPU =       %10d", runtime.NumCPU())
-	log.Infof(" RUN NumGoroutine = %10d", runtime.NumGoroutine())
-}
-
-func toMB(b uint64) uint64 {
-	const bytesInKB = 1024
-	return b / bytesInKB / bytesInKB
 }
