@@ -228,6 +228,8 @@ func main() {
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       5 * time.Second,
 	}
 	log.Info("服务监听端口：", appPort)
 
