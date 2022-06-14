@@ -13,5 +13,5 @@ func getFileCreateTime(filePath string) (string, error) {
 		return "", err
 	}
 
-	return time.Unix(st.Ctim.Sec, 0).Format("02/01/2006, 15:04:05"), nil
+	return time.Unix(int64(st.Ctim.Sec), 0).Format("02/01/2006, 15:04:05"), nil
 }
