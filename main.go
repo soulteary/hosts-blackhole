@@ -23,6 +23,7 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/soulteary/hosts-blackhole/internal/logger"
+	"github.com/soulteary/hosts-blackhole/internal/version"
 	"github.com/soulteary/hosts-blackhole/pkg/crypto"
 	"github.com/soulteary/hosts-blackhole/pkg/provider"
 	"github.com/soulteary/hosts-blackhole/pkg/system"
@@ -235,6 +236,7 @@ func main() {
 			log.Fatalf("程序启动出错: %s\n", err)
 		}
 	}()
+	log.Println("程序版本:", version.VERSION)
 	log.Println("程序已启动完毕 🚀")
 
 	<-ctx.Done()
