@@ -1,6 +1,6 @@
 # Hosts Blackhole
 
-![](https://img.shields.io/badge/AdAway-hosts-brightgreen) ![](https://img.shields.io/badge/AdGuard-domains-brightgreen) ![](https://img.shields.io/badge/StevenBlack-hosts-brightgreen) ![](https://img.shields.io/badge/NoTrack-blocklists-brightgreen)
+[![Security Scan](https://github.com/soulteary/hosts-blackhole/actions/workflows/scan.yml/badge.svg)](https://github.com/soulteary/hosts-blackhole/actions/workflows/scan.yml) [![Release](https://github.com/soulteary/hosts-blackhole/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/hosts-blackhole/actions/workflows/release.yaml) ![](https://img.shields.io/badge/AdAway-hosts-brightgreen) ![](https://img.shields.io/badge/AdGuard-domains-brightgreen) ![](https://img.shields.io/badge/StevenBlack-hosts-brightgreen) ![](https://img.shields.io/badge/NoTrack-blocklists-brightgreen)
 
 [![License: Apache v2](https://img.shields.io/badge/LICENSE-Apache%20v2-blue)](/LICENSE.md)
 
