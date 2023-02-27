@@ -94,9 +94,3 @@ Pages:
 
 ![](./screenshot/list.png)
 
-## Todos
-
-- Docker image
-  - [x] x86
-  - [ ] arm
-- [ ] Data source fetch
